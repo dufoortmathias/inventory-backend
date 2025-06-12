@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
+from routers import CustomerSupplier_router as CustomerSupplier
 
 app = FastAPI(swagger_ui_parameters={"syntaxHighlight" : False})  # Disable syntax highlighting in Swagger UI
 
@@ -22,13 +23,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# MongoDB connection setup
-client = MongoClient("mongodb+srv://admin:admin@cluster0.mryc9.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")  # Adjust the URI as needed
-db = client["InventoryDB"]  # Replace with your database name
-collection = db["Products"]  # Replace with your collection name
-
-@app.get("/")
-def read_root():
-    # get all products from the database
-    products = list(collection.find({}))
-    return {"products": products}
+app.include_router(CustomerSupplier.router)
